@@ -5,7 +5,8 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Medmo Page</h1>
+    <h1>MedSpace Home Page</h1>
+    <p>Hi, {{user.username}}</p>
     <a href='/user/{{user.username}}/assessment'>Start An Log</a>
     <a href='/user/{{user.username}}/portfolio'>My Portfolio</a>
     <a class="blue pull-left" href="{{ url_for('logout') }}">Logout</a>

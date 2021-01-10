@@ -6,11 +6,12 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo
 from datetime import datetime
+from os import environ
 
 
 app=Flask(__name__)
 app.config['SECRET_KEY']='secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///my_database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL') or'sqlite:///my_database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db=SQLAlchemy(app)
 
@@ -18,7 +19,7 @@ db=SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-#User Database
+#User Database Table
 class User(UserMixin,db.Model):
   id = db.Column(db.Integer, primary_key=True)
   username = db.Column(db.String(15), index=True, unique=True)
@@ -33,29 +34,30 @@ class User(UserMixin,db.Model):
   def check_password(self, password):
     return check_password_hash(self.password_hash, password)
 
-#Medical Log
+#MedicalLog Database Table
 class Log(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   bloodL = db.Column(db.Integer, index=True)
   exerciseL=db.Column(db.String(50), index=True)
   user_id=db.Column(db.Integer,db.ForeignKey('user.id'))
   #submitted=db.Column(db.DateTime)
-# Create User Table
+
+# Create Database Table
 #db.create_all()
 
-# Assessment form 
+# Assessment flask form 
 class LogForm(FlaskForm):
   blevel=StringField('Blood glucose level',validators=[DataRequired()])
   elevel=StringField('Exercise level',validators=[DataRequired()])
   submit = SubmitField('Request Review by Nurse')
-# login form
+# Login flask form
 class LoginForm(FlaskForm):
   email = StringField('Email',validators=[DataRequired(), Email()])
   password = PasswordField('Password', validators=[DataRequired()])
   remember = BooleanField('Remember Me')
   submit = SubmitField('Login')
 
-# registration form
+# Registration flask Form
 class RegistrationForm(FlaskForm):
   username = StringField('Username', validators=[DataRequired()])
   email = StringField('Email', validators=[DataRequired(), Email()])
@@ -63,17 +65,20 @@ class RegistrationForm(FlaskForm):
   password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
   submit = SubmitField('Register')
 
+#route
+
+#Main page route
 @app.route('/')
 def index():
     #users = User.query.all()
     return render_template('index.html')
 
-# user loader
+# User loader
 @login_manager.user_loader
 def load_user(user_id):
   return User.query.get(int(user_id))
 
-# Assessment form page
+# Assessment page route
 @app.route('/user/<username>/assessment',methods=['Get','POST'])
 @login_required
 def aform(username):
@@ -87,7 +92,7 @@ def aform(username):
     return redirect(f'/user/{username}/assessment')
   return render_template("assessment.html",form=lform,username=username)
 
-
+# Portfolio page route
 @app.route('/user/<username>/portfolio',methods=['Get','POST'])
 @login_required
 def portfolio(username):
@@ -112,13 +117,14 @@ def login():
       return redirect(url_for('login', _external=True, _scheme='http'))
   return render_template('login.html', form=form)
 
-# user route
+# user main page route
 @app.route('/user/<username>')
 @login_required
 def user(username):
   user = User.query.filter_by(username=username).first_or_404()
   return render_template('user.html', user=user)
 
+#Register route
 @app.route('/register', methods=['GET', 'POST'])
 def register():
   form = RegistrationForm(csrf_enabled=False)
@@ -130,6 +136,7 @@ def register():
     db.session.commit()
   return render_template('register.html', title='Register', form=form)
 
+#logOut Route
 @app.route("/logout")
 @login_required
 def logout():
