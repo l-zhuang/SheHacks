@@ -1,0 +1,22 @@
+{% extends 'navigation.html' %}
+ 
+{% block content %}
+<h1>Nutrition Calculator</h1>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.food.label }}<br>
+        {{ form.food(size=32) }}<br>
+        
+    </p>
+    <p>
+        {{ form.size.label }}<br>
+        {{ form.size() }}<br>
+    
+        <p>{{ form.submit() }}</p>    
+    </p>
+    {%if c%}
+        <p>Carbonhydrate: {{value}}</p>
+    {%endif%}
+    <a href='/user/{{username}}/assessment/next'>Next</a>
+    {% endblock %}

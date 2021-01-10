@@ -3,12 +3,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, intial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" type = "text/css" href="/static/s.css">
 </head>
 <body>
-    <h1>MedSpace Home Page</h1>
-    <p>Hi, {{user.username}}</p>
+    <h1 style="color: rgb(18, 197, 128);">MedSpace Home Page</h1>
+    
+    <div class='topN'>
     <a href='/user/{{user.username}}/assessment'>Start An Log</a>
     <a href='/user/{{user.username}}/portfolio'>My Portfolio</a>
     <a class="blue pull-left" href="{{ url_for('logout') }}">Logout</a>
+    </div>
+    <h2>Hi, {{user.username}}</p>
     </body>
     </html>
