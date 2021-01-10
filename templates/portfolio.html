@@ -1,9 +1,10 @@
 {% extends 'navigation.html' %}
  
 {% block content %}
-<h1>Portofolio</h1>
+<h1 style="color:rgba(154, 231, 65, 0.774);">Portfolio</h1>
 <h3>Mediacal Log History</h3>
 {% for l in logs: %}
+        <h4>Entry:</h4>
         <p>Blood Glucose Level:{{l.bloodL}}</p>
         <p>Exercise Level: {{l.exerciseL}}</p>
     {% endfor %}
