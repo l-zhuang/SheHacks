@@ -1,4 +1,4 @@
-# SheHacks Web app Project
+# SheHacks Web App Project
 
-Python web app with flask
+Create python web app with flask from scratch
 
